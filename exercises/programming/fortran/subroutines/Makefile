@@ -1,4 +1,4 @@
-COMP=cray
+COMP=gnu
 
 ifeq ($(COMP),cray)
 CC=cc
@@ -23,13 +23,13 @@ OBJ=laplacian.o main.o
 
 all: $(EXE)
 
-laplacian.o: laplacian.F90
-main.o: main.F90 laplacian.o
+laplacian.o: laplacian.f90
+main.o: main.f90 laplacian.o
 
 $(EXE): $(OBJ)
 	$(FC) $(FCFLAGS) $(OBJ) -o $@ 
 
-%.o: %.F90
+%.o: %.f90
 	$(FC) $(FCFLAGS) -c $< -o $@
 
 %.o: %.c
