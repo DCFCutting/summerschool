@@ -1,4 +1,4 @@
-COMP=cray
+COMP=gnu
 
 ifeq ($(COMP),cray)
 CC=cc
@@ -23,12 +23,12 @@ OBJ=intrinsics.o
 
 all: $(EXE)
 
-arrays.o: intrinsics.F90
+intrinsics.o: intrinsics.f90
 
 $(EXE): $(OBJ)
 	$(FC) $(FCFLAGS) $(OBJ) -o $@ 
 
-%.o: %.F90
+%.o: %.f90
 	$(FC) $(FCFLAGS) -c $< -o $@
 
 %.o: %.c

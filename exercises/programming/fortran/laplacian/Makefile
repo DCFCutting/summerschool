@@ -1,15 +1,15 @@
-COMP=cray
+COMP=gnu
 
 ifeq ($(COMP),cray)
 CC=cc
-FC=ftn 
-FCFLAGS=-efmw -hcpu=sandybridge
+FC=ftn
+FCFLAGS=-efmw -hcpu=sandybridge -h bounds
 endif
 
 ifeq ($(COMP),gnu)
 CC=gcc
 FC=gfortran
-FCFLAGS=-Wall
+FCFLAGS=-Wall #-fbounds-check
 endif
 
 ifeq ($(COMP),intel)
@@ -23,12 +23,12 @@ OBJ=laplacian.o
 
 all: $(EXE)
 
-loops.o: laplacian.F90
+laplacian.o: laplacian.f90
 
 $(EXE): $(OBJ)
 	$(FC) $(FCFLAGS) $(OBJ) -o $@ 
 
-%.o: %.F90
+%.o: %.f90
 	$(FC) $(FCFLAGS) -c $< -o $@
 
 %.o: %.c
