@@ -1,7 +1,7 @@
-COMP=cray
+COMP=gnu
 
 COMMONDIR=../../../heat/common
-LIBPNGDIR=/appl/opt/libpng
+LIBPNGDIR=/opt/local/
 
 ifeq ($(COMP),cray)
 FC=ftn
@@ -13,16 +13,16 @@ LIBS=-lpng -lz
 endif
 
 ifeq ($(COMP),gnu)
-FC=gfortran
+FC=gfortran-mp-6
 CC=gcc
 FCFLAGS=-O3 -Wall 
-CCFLAGS=-O3 -Wall -I$(LIBPNGDIR)/include -I$(COMMONDIR)
-LDFLAGS=-L$(LIBPNGDIR)/lib
-LIBS=-lpng -lz
+CCFLAGS=-O3 -Wall -I$(LIBPNGDIR)/include/libpng -I$(COMMONDIR)
+LDFLAGS=-L$(LIBPNGDIR)
+LIBS=-L$(LIBPNGDIR)/lib -lpng -lz
 endif
 
 EXE=io
-OBJS=main.o io.o pngwriter_mod.o
+OBJS=main.o io.o pngwriter_mod.o heat_mod.o 
 OBJS_PNG=$(COMMONDIR)/pngwriter.o
 
 
@@ -31,7 +31,8 @@ all: $(EXE)
 $(COMMONDIR)/pngwriter.o: $(COMMONDIR)/pngwriter.c $(COMMONDIR)/pngwriter.h
 io.o: io.F90 pngwriter_mod.o 
 pngwriter_mod.o: pngwriter_mod.F90
-main.o: main.F90 io.o
+heat_mod.o: heat_mod.F90
+main.o: main.F90 io.o heat_mod.o
 
 $(EXE): $(OBJS) $(OBJS_PNG)
 	$(FC) $(FCFLAGS) $(OBJS) $(OBJS_PNG) -o $@ $(LDFLAGS) $(LIBS)
