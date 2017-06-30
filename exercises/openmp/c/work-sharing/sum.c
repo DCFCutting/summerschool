@@ -7,7 +7,7 @@ int main(void)
     double vecA[NX], vecB[NX], vecC[NX];
     double sum;
     int i;
-
+    printf("%i \n",NX);
     /* Initialization of the vectors */
     for (i = 0; i < NX; i++) {
         vecA[i] = 1.0 / ((double) (NX - i));
@@ -19,6 +19,17 @@ int main(void)
      *   vecC = vecA + vecB
      */
 
+#pragma omp parallel for shared(vecA,vecB,vecC) private(i)
+    for(i=0; i<NX; i++)
+      {
+	if(i%1000==0)
+	  {
+	    printf("%i \n",i);
+	  }
+	vecC[i]=vecB[i]+vecA[i];
+      }
+    
+    
     sum = 0.0;
     /* Compute the check value */
     for (i = 0; i < NX; i++) {

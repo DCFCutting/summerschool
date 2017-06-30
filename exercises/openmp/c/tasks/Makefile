@@ -1,6 +1,6 @@
 CC=gcc
 CFLAGS=-O2 -std=c99 -fopenmp
-LIBS=-lpng
+LIBS=-L/opt/local/lib/ -lpng
 
 all: mandelbrot
 

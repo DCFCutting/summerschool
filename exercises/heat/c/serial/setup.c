@@ -8,7 +8,7 @@
 #include "heat.h"
 #include "../../common/pngwriter.h"
 
-#define NSTEPS 500  // Default number of iteration steps
+#define NSTEPS 5000  // Default number of iteration steps
 
 /* Initialize the heat equation solver */
 void initialize(int argc, char* argv[], field *current,
@@ -23,8 +23,8 @@ void initialize(int argc, char* argv[], field *current,
      */
 
 
-    int rows = 200;             //!< Field dimensions with default values
-    int cols = 200;
+    int rows = 500;             //!< Field dimensions with default values
+    int cols = 500;
 
     char input_file[64];        //!< Name of the optional input file
 
@@ -86,8 +86,33 @@ void generate_field(field *temperature)
     temperature->data =
         malloc_2d(temperature->nx + 2, temperature->ny + 2);
 
-    /* TODO: Initialize the values of temperature */
-#error Add field initialization
+    /* Radius of the source disc */
+    radius = temperature->nx / 6.0;
+#pragma omp parallel for private(i,j) 
+    for (i = 0; i < temperature->nx + 2; i++) {
+        for (j = 0; j < temperature->ny + 2; j++) {
+            /* Distances of point i, j from the origin */
+            dx = i - temperature->nx / 2 + 1;
+            dy = j - temperature->ny / 2 + 1;
+            if (dx * dx + dy * dy < radius * radius) {
+                temperature->data[i][j] = 5.0;
+            } else {
+                temperature->data[i][j] = 65.0;
+            }
+        }
+    }
+
+    /* Boundary conditions */
+#pragma omp parallel for private(i) 
+    for (i = 0; i < temperature->nx + 2; i++) {
+        temperature->data[i][0] = 20.0;
+        temperature->data[i][temperature->ny + 1] = 70.0;
+    }
+#pragma omp parallel for private(j) 
+    for (j = 0; j < temperature->ny + 2; j++) {
+        temperature->data[0][j] = 85.0;
+        temperature->data[temperature->nx + 1][j] = 5.0;
+    }
 
 }
 

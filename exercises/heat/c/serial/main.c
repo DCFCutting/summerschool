@@ -24,9 +24,15 @@ int main(int argc, char **argv)
 
     clock_t start_clock;        //!< Time stamps
 
+#pragma omp parallel private(iter)
+    {
     initialize(argc, argv, &current, &previous, &nsteps);
-
+    
     /* Output the initial field */
+
+#pragma omp single
+    {    
+
     write_field(&current, 0);
 
     /* Largest stable time step */
@@ -36,23 +42,36 @@ int main(int argc, char **argv)
 
     /* Get the start time stamp */
     start_clock = clock();
-
+    }
     /* Time evolve */
     for (iter = 1; iter < nsteps; iter++) {
         evolve(&current, &previous, a, dt);
         if (iter % image_interval == 0) {
+#pragma omp single
+	  {
             write_field(&current, iter);
-        }
+	  }
+	  
+	}
         /* Swap current field so that it will be used
             as previous for next iteration step */
-        swap_fields(&current, &previous);
+#pragma omp single
+	{
+	  swap_fields(&current, &previous);
+	  if(iter%(nsteps/50)==0) printf("Writing field at step %i \n",iter);
+	}
+       
     }
 
     /* Determine the CPU time used for the iteration */
+#pragma omp single
+    {
     printf("Iteration took %.3f seconds.\n", (double)(clock() - start_clock) /
         (double)CLOCKS_PER_SEC);
     printf("Reference value at 5,5: %f\n", previous.data[5][5]);
 
     finalize(&current, &previous);
+    }
+    }
     return 0;
 }

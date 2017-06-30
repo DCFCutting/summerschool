@@ -1,4 +1,4 @@
-COMP=cray
+COMP=gnu
 
 COMMONDIR=../../common
 
@@ -10,10 +10,11 @@ LIBS=-lpng -lz
 endif
 
 ifeq ($(COMP),gnu)
+PNGWRITEDIR=/opt/local/
 CC=gcc
-CCFLAGS=-O3 -Wall -I$(COMMONDIR)
+CCFLAGS=-O3 -Wall -I$(COMMONDIR) -I$(PNGWRITEDIR)/include/libpng16 
 LDFLAGS=
-LIBS=-lpng
+LIBS=-L$(PNGWRITEDIR)/lib -lpng
 endif
 
 EXE=heat_serial
