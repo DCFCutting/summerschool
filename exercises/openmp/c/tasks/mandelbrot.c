@@ -8,7 +8,6 @@
 #include <complex.h>
 #include <stdio.h>
 #include <stdlib.h>
-
 #include "pngwriter.h"
 
 // Maximum number of iterations
@@ -16,7 +15,7 @@ const int MAX_ITER_COUNT=512;
 // Marker for different iteration counts
 const int DIFF_ITER_COUNT = -1;
 // Maximum recursion depth
-const int MAX_DEPTH = 6;
+const int MAX_DEPTH = 10;
 // Region size below which do per-pixel
 const int MIN_SIZE = 32;
 // Subdivision factor along each axis
@@ -31,15 +30,15 @@ float abs2(complex v)
 
 // The kernel to count per-pixel values of the portion of the Mandelbrot set
 // Does not need to be edited
-int kernel(int w, int h, complex cmin, complex cmax,
+int kernel(long w, long h, complex cmin, complex cmax,
         int x, int y)
 {
     complex dc = cmax - cmin;
     float fx = (float)x / w;
     float fy = (float)y / h;
-    complex c = cmin + fx * creal(dc) + fy * cimag(dc) * I;
+    complex z = cmin + fx * creal(dc) + fy * cimag(dc) * I;
     int iteration = 0;
-    complex z = c;
+    complex c = -0.7269+0.1889*I;
     while(iteration < MAX_ITER_COUNT && abs2(z) < 2 * 2) {
         z = z * z + c;
         iteration++;
@@ -64,7 +63,7 @@ int kernel(int w, int h, complex cmin, complex cmax,
  * |             |           -----       -----
  * ---------------
  */
-void mandelbrot_block(int *iter_counts, int w, int h, complex cmin,
+void mandelbrot_block(long *iter_counts, int w, int h, complex cmin,
         complex cmax, int x0, int y0, int d, int depth)
 {
 
@@ -97,17 +96,17 @@ void mandelbrot_block(int *iter_counts, int w, int h, complex cmin,
 int main(int argc, char **argv)
 {
     // Picture size, should be power of two
-    const int w = 2048;
-    const int h = w;
-    int *iter_counts;
+    const long w = 65536;
+    const long h = w;
+    long *iter_counts;
 
     complex cmin, cmax;
 
-    int pic_bytes = w * h * sizeof(int);
-    iter_counts = (int*)malloc(pic_bytes);
+    long pic_bytes = w * h * sizeof(long);
+    iter_counts = (long*)malloc(pic_bytes);
 
-    cmin = -1.5 + -1.0*I;
-    cmax = 0.5 + 1.0*I;
+    cmin = -1.6 + -1.3*I;
+    cmax = 1.6 + 1.3*I;
 
     double t1 = omp_get_wtime();
 
@@ -122,7 +121,7 @@ int main(int argc, char **argv)
     double t2 = omp_get_wtime();
 
     // Save the image to a PNG file
-    save_png(iter_counts, w, h, "mandelbrot.png");
+    save_png(iter_counts, w, h, "juliet.png");
 
     double walltime = t2 - t1;
     // Print the timings
