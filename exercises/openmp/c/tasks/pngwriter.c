@@ -91,7 +91,7 @@ static int heat_colormap[256][3] = {
  *             layout. That is, if 'f' is given, then rows
  *             and columns are swapped.
  */
-int save_png(int *data, const int height, const int width, const char *fname)
+int save_png(long *data, const int height, const int width, const char *fname)
 {
     FILE *fp;
     png_structp pngstruct_ptr = NULL;
