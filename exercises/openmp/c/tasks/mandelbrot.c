@@ -96,13 +96,13 @@ void mandelbrot_block(long *iter_counts, int w, int h, complex cmin,
 int main(int argc, char **argv)
 {
     // Picture size, should be power of two
-    const long w = 65536;
-    const long h = w;
+    const long long w = 65536;
+    const long long h = w;
     long *iter_counts;
 
     complex cmin, cmax;
 
-    long pic_bytes = w * h * sizeof(long);
+    long long pic_bytes = w * h * sizeof(long);
     iter_counts = (long*)malloc(pic_bytes);
 
     cmin = -1.6 + -1.3*I;
