@@ -1,4 +1,4 @@
-COMP=cray
+COMP=gnu
 
 COMMONDIR=../../common
 
@@ -11,9 +11,9 @@ endif
 
 ifeq ($(COMP),gnu)
 CC=mpicc
-CCFLAGS=-O3 -Wall -I$(COMMONDIR)
+CCFLAGS=-O3 -Wall -I$(COMMONDIR) -I/opt/local/include/libpng16
 LDFLAGS=
-LIBS=-lpng
+LIBS=-L/opt/local/lib -lpng
 endif
 
 EXE=heat_mpi

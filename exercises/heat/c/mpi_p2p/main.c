@@ -27,19 +27,22 @@ int main(int argc, char **argv)
 
     double start_clock;        //!< Time stamps
 
-    /* TODO start: initialize MPI */
 
+
+    /* TODO start: initialize MPI */
+    MPI_Init(&argc,&argv);
     /* TODO end */
+
 
     initialize(argc, argv, &current, &previous, &nsteps, &parallelization);
 
     /* Output the initial field */
     write_field(&current, 0, &parallelization);
-
+    fflush(stdout);
     /* Largest stable time step */
     dx2 = current.dx * current.dx;
     dy2 = current.dy * current.dy;
-    dt = dx2 * dy2 / (2.0 * a * (dx2 + dy2));
+    dt = (dx2 * dy2 / (2.0 * a * (dx2 + dy2)))/50.;
 
     /* Get the start time stamp */
     start_clock = MPI_Wtime();
@@ -47,13 +50,15 @@ int main(int argc, char **argv)
     /* Time evolve */
     for (iter = 1; iter < nsteps; iter++) {
         exchange(&previous, &parallelization);
-        evolve(&current, &previous, a, dt);
+        evolve(&current, &previous, a, dt,&parallelization);
         if (iter % image_interval == 0) {
           write_field(&current, iter, &parallelization);
+	  if(parallelization.rank==0)	printf("Writing at step %i \n", iter);
         }
         /* Swap current field so that it will be used
             as previous for next iteration step */
         swap_fields(&current, &previous);
+
     }
 
     /* Determine the CPU time used for the iteration */
@@ -65,7 +70,7 @@ int main(int argc, char **argv)
     finalize(&current, &previous);
 
     /* TODO start: finalize MPI */
-
+    MPI_Finalize();
     /* TODO end */
 
     return 0;

@@ -1,5 +1,6 @@
 #ifndef __HEAT_H__
 #define __HEAT_H__
+#include <mpi.h>
 
 /* Datatype for temperature field */
 typedef struct {
@@ -16,16 +17,21 @@ typedef struct {
 
 /* Datatype for basic parallelization information */
 typedef struct {
-    int size;                   /* Number of MPI tasks */
-    int rank;
-    int nup, ndown;      /* Ranks of neighbouring MPI tasks */
+  int size;                   /* Number of MPI tasks */
+  int rank;
+  int nup, ndown;      /* Ranks of neighbouring MPI tasks */
+  MPI_Status statarray[4];
+  MPI_Request reqarray[4];
 } parallel_data;
 
 
 /* We use here fixed grid spacing */
 #define DX 0.01
 #define DY 0.01
-
+#define senddown 0
+#define sendup 1
+#define recvdown 2
+#define recvup 3
 
 /* Function prototypes */
 double **malloc_2d(int nx, int ny);
@@ -46,7 +52,7 @@ void generate_field(field *temperature, parallel_data *parallel);
 
 void exchange(field *temperature, parallel_data *parallel);
 
-void evolve(field *curr, field *prev, double a, double dt);
+void evolve(field *curr, field *prev, double a, double dt,parallel_data *parallel);
 
 void write_field(field *temperature, int iter, parallel_data *parallel);
 
