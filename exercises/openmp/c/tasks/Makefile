@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 COMP=gnu
+=======
+COMP=cray
+>>>>>>> 9edadcb5a868c2876b999a9de6bddbf7c26b17ec
 
 COMMONDIR=../../../heat/common
 
