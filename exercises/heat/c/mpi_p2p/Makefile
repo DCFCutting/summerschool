@@ -4,7 +4,7 @@ COMMONDIR=../../common
 
 ifeq ($(COMP),cray)
 CC=cc
-CCFLAGS=-O3 -I/appl/opt/libpng/include -I$(COMMONDIR)
+CCFLAGS=-O3 -I/appl/opt/libpng/include -I$(COMMONDIR) -h noomp
 LDFLAGS=-L/appl/opt/libpng/lib
 LIBS=-lpng -lz
 endif

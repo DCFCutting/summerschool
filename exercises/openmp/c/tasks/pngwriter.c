@@ -91,13 +91,13 @@ static int heat_colormap[256][3] = {
  *             layout. That is, if 'f' is given, then rows
  *             and columns are swapped.
  */
-int save_png(long *data, const int height, const int width, const char *fname)
+int save_png(long long *data, const long long height, const long long width, const char *fname)
 {
     FILE *fp;
     png_structp pngstruct_ptr = NULL;
     png_infop pnginfo_ptr = NULL;
     png_byte **row_pointers = NULL;
-    int i, j, max_value;
+    long long i, j, max_value;
 
     /* Determine the maximum value */
     max_value = INT_MIN;
